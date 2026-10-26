@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pastelería Delicia · Tienda Online</title>
+
+  <!-- Tipografías de Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS de Bootstrap 5.3 Estable -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Estilos Personalizados -->
+  <link href="css/estilos.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Barra de Navegación -->
+  <nav class="navbar navbar-expand-lg sticky-top nav-custom">
+    <div class="container">
+      <a class="navbar-brand brand-title" href="#">
+        <span>🥐 Pastelería</span> Delicia
+      </a>
+      
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-cart position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#carritoOffcanvas" aria-controls="carritoOffcanvas">
+          🛒 Carrito
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger badge-cart" id="badgeCant">0</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Portada / Hero -->
+  <header class="hero-section text-center">
+    <div class="container">
+      <span class="badge bg-danger-subtle text-danger fw-semibold px-3 py-2 rounded-pill mb-3 fs-6">
+        ✨ Artesanal & Recién horneado
+      </span>
+      <h1 class="hero-title">El arte de la repostería y el buen sabor</h1>
+      <p class="hero-subtitle">Tortas artesanales, bocaditos salados y antojos preparados cada mañana.</p>
+    </div>
+  </header>
+
+  <!-- Catálogo de Productos -->
+  <main class="container mb-5">
+    
+    <!-- Filtros y Buscador -->
+    <div class="row g-3 align-items-center justify-content-between mb-4">
+      <div class="col-12 col-md-6">
+        <div class="btn-group w-100" role="group" id="filtrosCategoria">
+          <button type="button" class="btn btn-filter active" data-cat="Todos">Todos</button>
+          <button type="button" class="btn btn-filter" data-cat="Dulces">🍰 Dulces</button>
+          <button type="button" class="btn btn-filter" data-cat="Salados">🥐 Salados</button>
+        </div>
+      </div>
+      <div class="col-12 col-md-5">
+        <input type="text" id="inputBuscar" class="form-control form-control-search" placeholder="🔍 Buscar alfajor, empanada, torta...">
+      </div>
+    </div>
+
+    <!-- Grilla de Productos (Tarjetas verticales) -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="catalogoGrid">
+      <!-- Se inyectan desde tienda.js -->
+    </div>
+  </main>
+
+  <!-- Panel Lateral del Carrito (Offcanvas) -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="carritoOffcanvas" aria-labelledby="carritoOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title fw-bold" id="carritoOffcanvasLabel">🛒 Tu Carrito de Compras</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column justify-content-between p-4">
+      
+      <!-- Lista de Ítems -->
+      <div class="cart-items-wrapper">
+        <ul class="list-group list-group-flush" id="listaCarrito">
+          <!-- Dinámico -->
+        </ul>
+      </div>
+
+      <!-- Barra de Descuento y Totales -->
+      <div class="border-top pt-3 mt-3">
+        
+        <!-- Barra Progreso Descuento -->
+        <div class="card p-3 mb-3 border-0 bg-light-subtle rounded-3">
+          <div class="d-flex justify-content-between fs-7 fw-semibold mb-1">
+            <span id="txtBarraProgreso">¡Agrega S/ 100.00 para 10% de descuento!</span>
+            <span id="pctBarraProgreso">0%</span>
+          </div>
+          <div class="progress" style="height: 8px;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" id="barraProgreso" role="progressbar" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- Resumen de Costos -->
+        <div class="d-flex justify-content-between text-muted mb-1 fs-6">
+          <span>Subtotal:</span>
+          <strong id="txtSubtotal">S/ 0.00</strong>
+        </div>
+        <div class="d-flex justify-content-between text-success mb-1 fs-6" id="filaDescuento" style="display: none !important;">
+          <span>Descuento (10%):</span>
+          <strong id="txtDescuento">-S/ 0.00</strong>
+        </div>
+        <div class="d-flex justify-content-between fs-4 fw-bold text-dark my-2">
+          <span>Total:</span>
+          <span id="txtTotal" class="text-primary-custom">S/ 0.00</span>
+        </div>
+
+        <button class="btn btn-primary-custom w-100 py-2 fs-6 fw-bold mt-2" id="btnAbrirCheckout">
+          Procesar Pedido 🛍️
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Pasarela de Pago / Simulador -->
+  <div class="modal fade" id="modalPago" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-bottom">
+          <h5 class="modal-title fw-bold" id="tituloModal">💳 Pasarela de Pago Segura</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          
+          <!-- Formulario de Tarjeta -->
+          <form id="formTarjeta">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Monto Total a Pagar</label>
+              <input type="text" class="form-control fw-bold fs-5 text-success bg-light" id="montoPagoModal" readonly value="S/ 0.00">
+            </div>
+
+            <div class="mb-3">
+              <label for="nombreTitular" class="form-label fw-semibold">Nombre del Titular</label>
+              <input type="text" class="form-control" id="nombreTitular" placeholder="Juan Pérez" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="numTarjeta" class="form-label fw-semibold">Número de Tarjeta</label>
+              <input type="text" class="form-control" id="numTarjeta" maxlength="19" placeholder="1234 5678 9012 3456" required>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-6">
+                <label for="expTarjeta" class="form-label fw-semibold">Vencimiento</label>
+                <input type="text" class="form-control" id="expTarjeta" maxlength="5" placeholder="MM/AA" required>
+              </div>
+              <div class="col-6">
+                <label for="cvvTarjeta" class="form-label fw-semibold">CVV</label>
+                <input type="password" class="form-control" id="cvvTarjeta" maxlength="4" placeholder="123" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary-custom w-100 py-2 fw-bold" id="btnPagar">
+              Pagar Ahora
+            </button>
+          </form>
+
+          <!-- Mensaje de Éxito -->
+          <div id="mensajeExito" class="text-center py-4" style="display: none;">
+            <div class="fs-1 text-success mb-2">🎉</div>
+            <h3 class="fw-bold text-success mb-2">¡Compra Exitosa!</h3>
+            <p class="text-muted mb-3">Tu pedido ha sido procesado correctamente y ya está en preparación.</p>
+            <div class="p-3 bg-light rounded text-start mb-3 fs-7">
+              <p class="mb-1"><strong>N° de Pedido:</strong> <span id="numPedido">#DEL-8492</span></p>
+              <p class="mb-0"><strong>Titular:</strong> <span id="confirmTitular">-</span></p>
+            </div>
+            <button class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notificación -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="notifToast" class="toast align-items-center text-bg-dark border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body fs-6" id="toastMensaje">
+          ¡Producto agregado!
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts JavaScript (Bootstrap 5.3 + Confetti + tienda.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <script src="js/tienda.js"></script>
+</body>
+</html>
